@@ -87,7 +87,8 @@ class Replicator:
             target_namespaces = [x.metadata.name for x in all_ns_objs]
 
         # Don't do anything to our own namespace
-        target_namespaces.remove(self.namespace)
+        if self.namespace in target_namespaces:
+            target_namespaces.remove(self.namespace)
 
         for ns_name in target_namespaces:
             if s.namespace_valid(ns_name):
