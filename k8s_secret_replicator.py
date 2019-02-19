@@ -82,8 +82,6 @@ class Replicator:
 
         raw_secret.metadata.annotations[self.managed_annotation_name] = "true"
 
-        del raw_secret.metadata.labels[self.label_name]
-
         if target_namespaces is None:
             all_ns_objs = v1.list_namespace(watch=False).items
             target_namespaces = [x.metadata.name for x in all_ns_objs]
@@ -125,7 +123,7 @@ class Replicator:
                 log.debug('got %s event', type)
                 log.debug('got %s object', obj)
 
-                if safe_label_get(obj, label_name, 'false') == 'true':
+                if safe_label_get(obj, label_name) is not None:
                     has_label = True
                 else:
                     has_label = False
