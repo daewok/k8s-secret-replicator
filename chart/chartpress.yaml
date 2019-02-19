@@ -1,0 +1,17 @@
+charts:
+  - name: secret-replicator
+    imagePrefix: daewok/
+    repo:
+      git: daewok/k8s-secret-replicator
+      published: https://daewok.github.io/k8s-secret-replicator
+    paths:
+      - ../requirements.txt
+      - ../k8s_secret_replicator.py
+    images:
+      k8s-secret-replicator:
+        contextPath: ..
+        dockerfilePath: ../Dockerfile
+        valuesPath: image
+        paths:
+          - ../requirements.txt
+          - ../k8s_secret_replicator.py

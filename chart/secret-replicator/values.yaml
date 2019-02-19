@@ -6,11 +6,11 @@ replicaCount: 1
 
 image:
   repository: daewok/k8s-secret-replicator
-  tag: latest
-  pullPolicy: Always
+  tag: generated-by-chartpress
+  pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 resources: {}
 
@@ -21,13 +21,13 @@ tolerations: []
 affinity: {}
 
 replicationLabelNames:
-  - "secret-replicator.daewok/replicate"
+  - secret-replicator.daewok/replicate
 
-managedAnnotationName: "secret-replicator.daewok/managed"
+managedAnnotationName: secret-replicator.daewok/managed
 
 rbac:
-  create: True
+  create: true
 
 serviceAccount:
-  create: True
+  create: true
   name:
