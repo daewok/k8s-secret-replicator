@@ -45,8 +45,8 @@ class Replicator:
 
         self.namespace = namespace
 
-        self.label_name = os.environ.get('SECRET_REPLICATOR_LABEL_NAME',
-                                         'secret-replicator.daewok/replicate')
+        self.label_names = os.environ.get('SECRET_REPLICATOR_LABEL_NAMES',
+                                          'secret-replicator.daewok/replicate').split(';')
         self.managed_annotation_name = os.environ.get('SECRET_REPLICATOR_MANGED_ANNOTATION_NAME',
                                                       'secret-replicator.daewok/managed')
 
@@ -107,13 +107,21 @@ class Replicator:
                     for s in self.watched_secrets.values():
                         self.add_secret_to_matching_namespaces(s, v1, target_namespaces=[obj.metadata.name])
 
+    def secret_should_be_replicated(self, s):
+        if safe_annotation_get(s, self.managed_annotation_name) is not None:
+            return False
+
+        for label_name in self.label_names:
+            if safe_label_get(s, label_name) is not None:
+                return True
+
+        return False
+
     def watch_for_new_secrets(self):
         v1 = kubernetes.client.CoreV1Api()
         w = kubernetes.watch.Watch()
 
         ns = self.namespace
-
-        label_name = self.label_name
 
         for e in w.stream(v1.list_namespaced_secret, namespace=ns):
             with self.lock:
@@ -123,10 +131,7 @@ class Replicator:
                 log.debug('got %s event', type)
                 log.debug('got %s object', obj)
 
-                if safe_label_get(obj, label_name) is not None:
-                    has_label = True
-                else:
-                    has_label = False
+                has_label = self.secret_should_be_replicated(obj)
 
                 secret_name = obj.metadata.name
                 secret_ns = obj.metadata.namespace
