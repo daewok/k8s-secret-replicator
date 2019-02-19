@@ -14,15 +14,6 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
 
-class WatchedSecret:
-    def __init__(self, name, namespace):
-        self.name = name
-        self.namespace = namespace
-
-    def namespace_valid(self, namespace):
-        return True
-
-
 def safe_label_get(obj, label_name, default=None):
     if obj.metadata.labels is None:
         return default
@@ -35,6 +26,15 @@ def safe_annotation_get(obj, annotation_name, default=None):
         return default
     else:
         return obj.metadata.annotations.get(annotation_name, default)
+
+
+class WatchedSecret:
+    def __init__(self, name, namespace):
+        self.name = name
+        self.namespace = namespace
+
+    def namespace_valid(self, namespace):
+        return True
 
 
 class Replicator:
