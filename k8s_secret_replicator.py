@@ -179,8 +179,8 @@ class Replicator:
 
 
 if __name__ == '__main__':
-    namespace_to_watch = os.getenv.get('SECRET_REPLICATOR_NAMESPACE_TO_WATCH',
-                                       None)
+    namespace_to_watch = os.environ.get('SECRET_REPLICATOR_NAMESPACE_TO_WATCH',
+                                        None)
     if namespace_to_watch is None:
         raise ValueError('SECRET_REPLICATOR_NAMESPACE_TO_WATCH must be set')
 

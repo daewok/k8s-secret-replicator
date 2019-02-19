@@ -30,7 +30,9 @@ tolerations: []
 
 affinity: {}
 
-replicationLabelName: "secret-replicator.daewok/replicate"
+replicationLabelNames:
+  - "secret-replicator.daewok/replicate"
+
 managedAnnotationName: "secret-replicator.daewok/managed"
 
 rbac:
