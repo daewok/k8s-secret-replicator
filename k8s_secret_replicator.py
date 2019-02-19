@@ -86,6 +86,9 @@ class Replicator:
             all_ns_objs = v1.list_namespace(watch=False).items
             target_namespaces = [x.metadata.name for x in all_ns_objs]
 
+        # Don't do anything to our own namespace
+        target_namespaces.remove(self.namespace)
+
         for ns_name in target_namespaces:
             if s.namespace_valid(ns_name):
                 self.add_secret_to_namespace(s, raw_secret, ns_name, v1)
@@ -97,6 +100,10 @@ class Replicator:
         for e in w.stream(v1.list_namespace):
             type = e['type']
             obj = e['object']
+
+            if obj.metadata.name == self.namespace:
+                # Don't do anything to our own namespace.
+                continue
 
             log.debug('got %s event', type)
             log.debug('got %s object', obj)
