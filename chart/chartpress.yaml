@@ -2,7 +2,7 @@ charts:
   - name: secret-replicator
     imagePrefix: daewok/
     repo:
-      git: daewok/k8s-secret-replicator
+      git: daewok/helm-charts
       published: https://daewok.github.io/helm-charts
     paths:
       - ../requirements.txt
