@@ -27,8 +27,8 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
-            - name: SECRET_REPLICATOR_MANGED_ANNOTATION_NAME
-              value: {{ .Values.managedAnnotationName | quote }}
+            - name: SECRET_REPLICATOR_MANGED_LABEL_NAME
+              value: {{ .Values.managedLabelName | quote }}
             - name: SECRET_REPLICATOR_LABEL_NAMES
               value: {{ join ";" .Values.replicationLabelNames | quote }}
             - name: SECRET_REPLICATOR_NAMESPACE_TO_WATCH

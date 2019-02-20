@@ -21,13 +21,6 @@ def safe_label_get(obj, label_name, default=None):
         return obj.metadata.labels.get(label_name, default)
 
 
-def safe_annotation_get(obj, annotation_name, default=None):
-    if obj.metadata.annotations is None:
-        return default
-    else:
-        return obj.metadata.annotations.get(annotation_name, default)
-
-
 class WatchedSecret:
     def __init__(self, name, namespace):
         self.name = name
@@ -47,8 +40,8 @@ class Replicator:
 
         self.label_names = os.environ.get('SECRET_REPLICATOR_LABEL_NAMES',
                                           'secret-replicator.daewok/replicate').split(';')
-        self.managed_annotation_name = os.environ.get('SECRET_REPLICATOR_MANGED_ANNOTATION_NAME',
-                                                      'secret-replicator.daewok/managed')
+        self.managed_label_name = os.environ.get('SECRET_REPLICATOR_MANGED_LABEL_NAME',
+                                                 'secret-replicator.daewok/managed')
 
     def add_secret_to_namespace(self, s, raw_secret, ns, v1):
 
@@ -64,7 +57,7 @@ class Replicator:
             log.info('Creating secret %s/%s', ns, s.name)
             raw_secret.metadata.resource_version = None
             v1.create_namespaced_secret(ns, raw_secret)
-        elif safe_annotation_get(existing_secret, self.managed_annotation_name) == 'true':
+        elif safe_label_get(existing_secret, self.managed_label_name) == 'true':
             log.info('Replacing secret %s/%s', ns, s.name)
             raw_secret.metadata.resource_version = existing_secret.metadata.resource_version
             v1.replace_namespaced_secret(s.name, ns, raw_secret)
@@ -77,10 +70,10 @@ class Replicator:
                                                export=True,
                                                exact=False)
 
-        if raw_secret.metadata.annotations is None:
-            raw_secret.metadata.annotations = {}
+        if raw_secret.metadata.labels is None:
+            raw_secret.metadata.labels = {}
 
-        raw_secret.metadata.annotations[self.managed_annotation_name] = "true"
+        raw_secret.metadata.labels[self.managed_label_name] = "true"
 
         if target_namespaces is None:
             all_ns_objs = v1.list_namespace(watch=False).items
@@ -116,7 +109,7 @@ class Replicator:
                         self.add_secret_to_matching_namespaces(s, v1, target_namespaces=[obj.metadata.name])
 
     def secret_should_be_replicated(self, s):
-        if safe_annotation_get(s, self.managed_annotation_name) is not None:
+        if safe_label_get(s, self.managed_label_name) is not None:
             return False
 
         for label_name in self.label_names:
