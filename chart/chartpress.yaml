@@ -3,7 +3,7 @@ charts:
     imagePrefix: daewok/
     repo:
       git: daewok/k8s-secret-replicator
-      published: https://daewok.github.io/k8s-secret-replicator
+      published: https://daewok.github.io/helm-charts
     paths:
       - ../requirements.txt
       - ../k8s_secret_replicator.py

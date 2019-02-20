@@ -1,0 +1,29 @@
+#+TITLE: Kubernetes Secret Replicator
+#+AUTHOR: Eric Timmons
+
+This package attempts to make it easier to share secrets between multiple
+namespaces in a Kubernetes cluster. It was originally designed to share wild
+card certificates from [[https://github.com/jetstack/cert-manager/][cert-manager]] without hitting LetsEncrypt rate limits and
+to share pull secrets for a shared, private Docker registry.
+
+Currently, any secret that should be replicated is copied into every
+namespace. This means this version is currently usable only for clusters where
+every user is trusted. Future versions will likely have more complex ways of
+determining into what namespaces a secret should be replicated. Use cases for
+this are welcome, just open an issue!
+
+To install the secret replicator using Helm, run the following commands:
+
+#+begin_src shell
+  helm repo add daewok https://daewok.github.io/helm-charts
+  helm repo up
+  helm install \
+       --namespace secret-replicator \
+       --name secret-replicator \
+       daewok/secret-replicator
+#+end_src
+
+The code determines what secrets should be copied by looking at the secret
+labels. Any secret in the same namespace as the pod and with any label listed in
+~replicationLabelNames~ set will be copied to every other namespace. The secret
+will be copied any time a new namespace is created or the secret is modified.
