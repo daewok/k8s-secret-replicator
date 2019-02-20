@@ -7,7 +7,7 @@ import threading
 import logging
 import os
 
-FORMAT = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
+FORMAT = "%(levelname)s: %(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 logging.basicConfig(format=FORMAT)
 
 log = logging.getLogger(__name__)
