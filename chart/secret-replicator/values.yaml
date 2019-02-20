@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: daewok/k8s-secret-replicator
-  tag: generated-by-chartpress
+  tag: '0.0.2'
   pullPolicy: IfNotPresent
 
 nameOverride: ''
