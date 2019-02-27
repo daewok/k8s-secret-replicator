@@ -155,6 +155,8 @@ class Replicator:
                 elif type == 'MODIFIED':
                     log.info('modified: %s/%s', secret_ns, secret_name)
                     if has_label:
+                        new_secret = WatchedSecret(secret_name, secret_ns)
+                        self.watched_secrets[secret_name] = new_secret
                         self.add_secret_to_matching_namespaces(new_secret, v1)
                     elif secret_name in self.watched_secrets:
                         del self.watched_secrets[secret_name]
