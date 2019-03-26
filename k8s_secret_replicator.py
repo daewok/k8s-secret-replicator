@@ -162,6 +162,7 @@ class Replicator:
                         del self.watched_secrets[secret_name]
                 else:
                     log.warn('Unknown modification type: %s', type)
+                    log.warn('got %s object', obj)
 
     def start(self):
         self.ns_thread = threading.Thread(target=self.watch_for_new_namespaces)
